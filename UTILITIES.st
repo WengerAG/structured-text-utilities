@@ -49,7 +49,7 @@ INTERFACE
 			month : USINT; // numeric month of year (e.g. 10)
 			day : USINT; // numeric day of month (e.g. 31)
 			day_of_year : USINT; // numeric day of year (e.g. 304)
-			day_of_week : USINT; // numeric day of week (e.g. 2)
+			day_of_week : USINT; // numeric day of week (Monday = 1 <-> Sunday = 7; e.g. 2)
 			iso8601 : STRING[10]; // date in ISO 8601 representation (e.g. '2019-10-31')
 		END_STRUCT
 
@@ -69,7 +69,7 @@ INTERFACE
 			month : USINT; // numeric month of year (e.g. 10)
 			day : USINT; // numeric day of month (e.g. 31)
 			day_of_year : USINT; // numeric day of year (e.g. 304)
-			day_of_week : USINT; // numeric day of week (e.g. 2)
+			day_of_week : USINT; // numeric day of week (Monday = 1 <-> Sunday = 7; e.g. 2)
 			hour : USINT; // numeric hour of day (e.g. 21)
 			minute : USINT; // numeric minute of hour (e.g. 34)
 			second : USINT; // numeric second of minute (e.g. 56)
@@ -467,15 +467,7 @@ IMPLEMENTATION
             END_IF;
         END_FOR;
         
-        CASE days_since_1992 MOD 7 OF
-            0 : out.day_of_week := 2; // Tuesday
-            1 : out.day_of_week := 3; // Wednesday
-            2 : out.day_of_week := 4; // Thursday
-            3 : out.day_of_week := 5; // Friday
-            4 : out.day_of_week := 6; // Saturday
-            5 : out.day_of_week := 7; // Sunday
-            6 : out.day_of_week := 1; // Monday
-        END_CASE;
+        out.day_of_week := UDINT_TO_USINT((((days_since_1992 MOD 7) + 1) MOD 7) + 1);
 		
 		out.iso8601 := CONCAT(INT_TO_STRING(out.year), '-');
 		
