@@ -15,6 +15,8 @@ INTERFACE
 	FUNCTION STRING_STARTSWITH;
 	FUNCTION STRING_ENDSWITH;
 	
+	FUNCTION COMPARE_STRINGS;
+	
 	FUNCTION USINT_TO_STRING;
 	FUNCTION SINT_TO_STRING;
 	FUNCTION UINT_TO_STRING;
@@ -164,6 +166,42 @@ IMPLEMENTATION
 		ELSE
 			STRING_ENDSWITH := RIGHT(in1, in2_len) = in2;
 		END_IF;
+	END_FUNCTION
+
+
+	// Compares two strings lexicographically (based on the ISO 8859-1 / Latin 1 representation).
+	// Returns 0 if the both strings are equal, a negative value if string 1 is less than the string 2 or a positive value if string 1 is greater than string 2.
+	// This function is case-sensitive.
+	FUNCTION COMPARE_STRINGS : INT
+		VAR_INPUT
+			in1 : STRING[254];
+			in2 : STRING[254];
+		END_VAR
+		
+		VAR_TEMP
+			in1_len : INT;
+			in2_len : INT;
+			i : DINT;
+			i_end : INT;
+		END_VAR
+		
+		in1_len := LEN(in1);
+		in2_len := LEN(in2);
+		
+		IF in1_len < in2_len THEN
+			i_end := in1_len;
+		ELSE
+			i_end := in2_len;
+		END_IF;
+		
+		FOR i := 0 TO i_end DO
+			IF in1[i] <> in2[i] THEN
+				COMPARE_STRINGS := BYTE_TO_INT(in1[i]) - BYTE_TO_INT(in2[i]);
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		COMPARE_STRINGS := in1_len - in2_len;
 	END_FUNCTION
 
 
