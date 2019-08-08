@@ -110,7 +110,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		IF (out.count MOD 2) = 1 THEN
 			out.med_val := data[i];
 		ELSE
@@ -163,7 +163,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		IF (out.count MOD 2) = 1 THEN
 			out.med_val := data[i];
 		ELSE
@@ -216,7 +216,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
 		CALCULATE_DINT_ARRAY_STATISTICS := out;
@@ -265,7 +265,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
 		CALCULATE_UDINT_ARRAY_STATISTICS := out;
@@ -314,7 +314,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
 		CALCULATE_INT_ARRAY_STATISTICS := out;
@@ -363,7 +363,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
 		CALCULATE_UINT_ARRAY_STATISTICS := out;
@@ -412,7 +412,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
 		CALCULATE_SINT_ARRAY_STATISTICS := out;
@@ -461,7 +461,7 @@ IMPLEMENTATION
 		out.std_dev := sqrt(out.sum_sqr / out.count);
 		
 		// calculate median value
-		i := i_start + LREAL_TO_DINT(out.count / 2 - 0.5); // index of (lower) median
+		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
 		CALCULATE_USINT_ARRAY_STATISTICS := out;
