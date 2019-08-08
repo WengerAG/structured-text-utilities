@@ -14,8 +14,8 @@ INTERFACE
 	FUNCTION CALCULATE_UINT_ARRAY_STATISTICS;
 	FUNCTION CALCULATE_SINT_ARRAY_STATISTICS;
 	FUNCTION CALCULATE_USINT_ARRAY_STATISTICS;
-
-
+	
+	
 	TYPE
 		// Contains statistics information of an array of floating values.
 		FLOAT_ARRAY_STATISTICS : STRUCT
@@ -69,14 +69,14 @@ IMPLEMENTATION
 	FUNCTION CALCULATE_LREAL_ARRAY_STATISTICS : FLOAT_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF LREAL;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : FLOAT_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort array
 		SORT_LREAL_ARRAY(data);
@@ -116,20 +116,20 @@ IMPLEMENTATION
 		
 		CALCULATE_LREAL_ARRAY_STATISTICS := out;
 	END_FUNCTION
-
+	
 	// Calculates statistics of given array containing REAL values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
 	FUNCTION CALCULATE_REAL_ARRAY_STATISTICS : FLOAT_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF REAL;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : FLOAT_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort array
 		SORT_REAL_ARRAY(data);
@@ -169,20 +169,20 @@ IMPLEMENTATION
 		
 		CALCULATE_REAL_ARRAY_STATISTICS := out;
 	END_FUNCTION
-
+	
 	// Calculates statistics of given array containing DINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
 	FUNCTION CALCULATE_DINT_ARRAY_STATISTICS : INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF DINT;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : INTEGRAL_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort source array
 		SORT_DINT_ARRAY(data);
@@ -224,14 +224,14 @@ IMPLEMENTATION
 	FUNCTION CALCULATE_UDINT_ARRAY_STATISTICS : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF UDINT;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : UNSIGNED_INTEGRAL_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort source array
 		SORT_UDINT_ARRAY(data);
@@ -267,20 +267,20 @@ IMPLEMENTATION
 		
 		CALCULATE_UDINT_ARRAY_STATISTICS := out;
 	END_FUNCTION
-
+	
 	// Calculates statistics of given array containing INT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
 	FUNCTION CALCULATE_INT_ARRAY_STATISTICS : INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF INT;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : INTEGRAL_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort source array
 		SORT_INT_ARRAY(data);
@@ -322,14 +322,14 @@ IMPLEMENTATION
 	FUNCTION CALCULATE_UINT_ARRAY_STATISTICS : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF UINT;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : UNSIGNED_INTEGRAL_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort source array
 		SORT_UINT_ARRAY(data);
@@ -365,20 +365,20 @@ IMPLEMENTATION
 		
 		CALCULATE_UINT_ARRAY_STATISTICS := out;
 	END_FUNCTION
-
+	
 	// Calculates statistics of given array containing SINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
 	FUNCTION CALCULATE_SINT_ARRAY_STATISTICS : INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF SINT;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : INTEGRAL_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort source array
 		SORT_SINT_ARRAY(data);
@@ -420,14 +420,14 @@ IMPLEMENTATION
 	FUNCTION CALCULATE_USINT_ARRAY_STATISTICS : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF USINT;
-        END_VAR
+		END_VAR
 		
 		VAR_TEMP
-            i : DINT;
+			i : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			out : UNSIGNED_INTEGRAL_ARRAY_STATISTICS;
-        END_VAR
+		END_VAR
 		
 		// sort source array
 		SORT_USINT_ARRAY(data);

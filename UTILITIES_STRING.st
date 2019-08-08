@@ -36,10 +36,10 @@ IMPLEMENTATION
 			in2 : STRING[254];
 			in3 : STRING[254];
 		END_VAR
-
+		
 		CONCAT3 := CONCAT(CONCAT(in1, in2), in3);
 	END_FUNCTION
-
+	
 	FUNCTION CONCAT4 : STRING[254]
 		VAR_INPUT
 			in1 : STRING[254];
@@ -47,10 +47,10 @@ IMPLEMENTATION
 			in3 : STRING[254];
 			in4 : STRING[254];
 		END_VAR
-
+		
 		CONCAT4 := CONCAT(CONCAT(CONCAT(in1, in2), in3), in4);
 	END_FUNCTION
-
+	
 	FUNCTION CONCAT5 : STRING[254]
 		VAR_INPUT
 			in1 : STRING[254];
@@ -59,10 +59,10 @@ IMPLEMENTATION
 			in4 : STRING[254];
 			in5 : STRING[254];
 		END_VAR
-
+		
 		CONCAT5 := CONCAT(CONCAT(CONCAT(CONCAT(in1, in2), in3), in4), in5);
 	END_FUNCTION
-
+	
 	FUNCTION CONCAT6 : STRING[254]
 		VAR_INPUT
 			in1 : STRING[254];
@@ -72,10 +72,10 @@ IMPLEMENTATION
 			in5 : STRING[254];
 			in6 : STRING[254];
 		END_VAR
-
+		
 		CONCAT6 := CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(in1, in2), in3), in4), in5), in6);
 	END_FUNCTION
-
+	
 	FUNCTION CONCAT7 : STRING[254]
 		VAR_INPUT
 			in1 : STRING[254];
@@ -86,10 +86,10 @@ IMPLEMENTATION
 			in6 : STRING[254];
 			in7 : STRING[254];
 		END_VAR
-
+		
 		CONCAT7 := CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(in1, in2), in3), in4), in5), in6), in7);
 	END_FUNCTION
-
+	
 	FUNCTION CONCAT8 : STRING[254]
 		VAR_INPUT
 			in1 : STRING[254];
@@ -101,10 +101,10 @@ IMPLEMENTATION
 			in7 : STRING[254];
 			in8 : STRING[254];
 		END_VAR
-
+		
 		CONCAT8 := CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(in1, in2), in3), in4), in5), in6), in7), in8);
 	END_FUNCTION
-
+	
 	FUNCTION CONCAT9 : STRING[254]
 		VAR_INPUT
 			in1 : STRING[254];
@@ -117,58 +117,58 @@ IMPLEMENTATION
 			in8 : STRING[254];
 			in9 : STRING[254];
 		END_VAR
-
+		
 		CONCAT9 := CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(in1, in2), in3), in4), in5), in6), in7), in8), in9);
 	END_FUNCTION
-
-
+	
+	
 	// Returns TRUE if given string in first parameter starts with given string in second parameter.
 	// This function is case-sensitive.
 	FUNCTION STRING_STARTSWITH : BOOL
-		VAR_TEMP
-			in1_len : INT;
-			in2_len : INT;
-		END_VAR
-
 		VAR_INPUT
 			in1 : STRING[254];
 			in2 : STRING[254];
 		END_VAR
-
+		
+		VAR_TEMP
+			in1_len : INT;
+			in2_len : INT;
+		END_VAR
+		
 		in1_len := LEN(in1);
 		in2_len := LEN(in2);
-
+		
 		IF in1_len < in2_len THEN
 			STRING_STARTSWITH := FALSE;
 		ELSE
 			STRING_STARTSWITH := LEFT(in1, in2_len) = in2;
 		END_IF;
 	END_FUNCTION
-
+	
 	// Returns TRUE if given string in first parameter ends with given string in second parameter.
 	// This function is case-sensitive.
 	FUNCTION STRING_ENDSWITH : BOOL
-		VAR_TEMP
-			in1_len : INT;
-			in2_len : INT;
-		END_VAR
-
 		VAR_INPUT
 			in1 : STRING[254];
 			in2 : STRING[254];
 		END_VAR
-
+		
+		VAR_TEMP
+			in1_len : INT;
+			in2_len : INT;
+		END_VAR
+		
 		in1_len := LEN(in1);
 		in2_len := LEN(in2);
-
+		
 		IF in1_len < in2_len THEN
 			STRING_ENDSWITH := FALSE;
 		ELSE
 			STRING_ENDSWITH := RIGHT(in1, in2_len) = in2;
 		END_IF;
 	END_FUNCTION
-
-
+	
+	
 	// Compares two strings lexicographically (based on the ISO 8859-1 / Latin 1 representation).
 	// Returns 0 if the both strings are equal, a negative value if string 1 is less than the string 2 or a positive value if string 1 is greater than string 2.
 	// This function is case-sensitive.
@@ -203,70 +203,70 @@ IMPLEMENTATION
 		
 		COMPARE_STRINGS := in1_len - in2_len;
 	END_FUNCTION
-
-
+	
+	
 	FUNCTION USINT_TO_STRING : STRING[3]
 		VAR_INPUT
 			in : USINT;
 		END_VAR
-
+		
 		USINT_TO_STRING := UDINT_TO_STRING(USINT_TO_UDINT(in));
 	END_FUNCTION
-
+	
 	FUNCTION SINT_TO_STRING : STRING[4]
 		VAR_INPUT
 			in : SINT;
 		END_VAR
-
+		
 		SINT_TO_STRING := DINT_TO_STRING(SINT_TO_DINT(in));
 	END_FUNCTION
-
+	
 	FUNCTION UINT_TO_STRING : STRING[5]
 		VAR_INPUT
 			in : UINT;
 		END_VAR
-
+		
 		UINT_TO_STRING := UDINT_TO_STRING(UINT_TO_UDINT(in));
 	END_FUNCTION
-
+	
 	FUNCTION INT_TO_STRING : STRING[6]
 		VAR_INPUT
 			in : INT;
 		END_VAR
-
+		
 		INT_TO_STRING := DINT_TO_STRING(INT_TO_DINT(in));
 	END_FUNCTION
 	
-
+	
 	FUNCTION STRING_TO_USINT : USINT
 		VAR_INPUT
 			in : STRING[3];
 		END_VAR
-
+		
 		STRING_TO_USINT := UDINT_TO_USINT(STRING_TO_UDINT(in));
 	END_FUNCTION
-
+	
 	FUNCTION STRING_TO_SINT : SINT
 		VAR_INPUT
 			in : STRING[4];
 		END_VAR
-
+		
 		STRING_TO_SINT := DINT_TO_SINT(STRING_TO_DINT(in));
 	END_FUNCTION
-
+	
 	FUNCTION STRING_TO_UINT : UINT
 		VAR_INPUT
 			in : STRING[5];
 		END_VAR
-
+		
 		STRING_TO_UINT := UDINT_TO_UINT(STRING_TO_UDINT(in));
 	END_FUNCTION
-
+	
 	FUNCTION STRING_TO_INT : INT
 		VAR_INPUT
 			in : STRING[6];
 		END_VAR
-
+		
 		STRING_TO_INT := DINT_TO_INT(STRING_TO_DINT(in));
 	END_FUNCTION
 END_IMPLEMENTATION

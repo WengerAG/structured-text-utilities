@@ -30,8 +30,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : LREAL;
-        END_VAR
+			temp : LREAL;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -46,7 +46,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_REAL_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF REAL;
@@ -56,8 +56,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : REAL;
-        END_VAR
+			temp : REAL;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -72,7 +72,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_DINT_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF DINT;
@@ -82,8 +82,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : DINT;
-        END_VAR
+			temp : DINT;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -98,7 +98,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_UDINT_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF UDINT;
@@ -108,8 +108,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : UDINT;
-        END_VAR
+			temp : UDINT;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -124,7 +124,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_INT_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF INT;
@@ -134,8 +134,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : INT;
-        END_VAR
+			temp : INT;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -150,7 +150,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_UINT_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF UINT;
@@ -160,8 +160,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : UINT;
-        END_VAR
+			temp : UINT;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -176,7 +176,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_SINT_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF SINT;
@@ -186,8 +186,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : SINT;
-        END_VAR
+			temp : SINT;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -202,7 +202,7 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
+	
 	FUNCTION SORT_USINT_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF USINT;
@@ -212,8 +212,8 @@ IMPLEMENTATION
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
-            temp : USINT;
-        END_VAR
+			temp : USINT;
+		END_VAR
 		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
@@ -228,23 +228,23 @@ IMPLEMENTATION
 			END_FOR;
 		END_FOR;
 	END_FUNCTION
-
-
+	
+	
 	FUNCTION SORT_STRING_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF STRING;
 		END_VAR
-			
+		
 		VAR_TEMP
 			i, j : DINT;
 			i_start : DINT;
 			i_end : DINT;
 			temp : STRING;
 		END_VAR
-			
+		
 		i_start := _firstIndexOf(data);
 		i_end := _lastIndexOf(data);
-			
+		
 		FOR i:=i_start TO i_end DO
 			FOR j:=i+1 TO i_end DO
 				IF COMPARE_STRINGS(data[j], data[i]) < 0 THEN
