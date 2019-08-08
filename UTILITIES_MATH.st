@@ -15,6 +15,9 @@ INTERFACE
 	FUNCTION CALCULATE_SINT_ARRAY_STATISTICS;
 	FUNCTION CALCULATE_USINT_ARRAY_STATISTICS;
 	
+	FUNCTION ROUND_LREAL;
+	FUNCTION ROUND_REAL;
+	
 	
 	TYPE
 		// Contains statistics information of an array of floating values.
@@ -462,5 +465,62 @@ IMPLEMENTATION
 		out.med_val := data[i];
 		
 		CALCULATE_USINT_ARRAY_STATISTICS := out;
+	END_FUNCTION
+	
+	
+	// Returns a rounded LREAL value with given precision.
+	// Examples: ROUND_LREAL(1.2323, 3) => 1.232 / ROUND_LREAL(9.8765, 2) => 9.88
+	FUNCTION ROUND_LREAL : LREAL
+		VAR_INPUT
+			in : LREAL;
+			precision : USINT;
+		END_VAR
+		
+		VAR_TEMP
+			str : STRING;
+			i_decimal_point : INT;
+			i_digit_to_round : INT;
+			out : LREAL;
+		END_VAR
+		
+		str := LREAL_TO_STRING(in);
+		
+		i_decimal_point := FIND(str, '.');
+		out := STRING_TO_LREAL(LEFT(str, i_decimal_point + precision));
+		
+		i_digit_to_round := i_decimal_point + precision + 1;
+		IF i_digit_to_round <= LEN(str) AND str[i_digit_to_round] >= 53 THEN
+			out := out + EXPD(-precision);
+		END_IF;
+		
+		ROUND_LREAL:= out;
+	END_FUNCTION
+	
+	// Returns a rounded REAL value with given precision.
+	// Examples: ROUND_REAL(1.2323, 3) => 1.232 / ROUND_REAL(9.8765, 2) => 9.88
+	FUNCTION ROUND_REAL : REAL
+		VAR_INPUT
+			in : REAL;
+			precision : USINT;
+		END_VAR
+		
+		VAR_TEMP
+			str : STRING;
+			i_decimal_point : INT;
+			i_digit_to_round : INT;
+			out : REAL;
+		END_VAR
+		
+		str := REAL_TO_STRING(in);
+		
+		i_decimal_point := FIND(str, '.');
+		out := STRING_TO_REAL(LEFT(str, i_decimal_point + precision));
+		
+		i_digit_to_round := i_decimal_point + precision + 1;
+		IF i_digit_to_round <= LEN(str) AND str[i_digit_to_round] >= 53 THEN
+			out := out + EXPD(-precision);
+		END_IF;
+		
+		ROUND_REAL:= out;
 	END_FUNCTION
 END_IMPLEMENTATION
