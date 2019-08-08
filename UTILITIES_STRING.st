@@ -17,6 +17,11 @@ INTERFACE
 	
 	FUNCTION COMPARE_STRINGS;
 	
+	FUNCTION ENCODE_STRING_ASCII;
+	FUNCTION ENCODE_STRING_LATIN1;
+	FUNCTION DECODE_STRING_ASCII;
+	FUNCTION DECODE_STRING_LATIN1;
+	
 	FUNCTION USINT_TO_STRING;
 	FUNCTION SINT_TO_STRING;
 	FUNCTION UINT_TO_STRING;
@@ -204,6 +209,151 @@ IMPLEMENTATION
 		COMPARE_STRINGS := in1_len - in2_len;
 	END_FUNCTION
 	
+	
+	// Encodes given string into given BYTE array using ASCII.
+	// If target array is too small, given string will be cut. If target array is too large, remaining bytes will be set to NULL (0).
+	FUNCTION ENCODE_STRING_ASCII : VOID
+		VAR_INPUT
+			in : STRING[254];
+		END_VAR
+		
+		VAR_IN_OUT
+			out : ARRAY[..] OF BYTE;
+		END_VAR
+		
+		VAR_TEMP
+			in_len : INT;
+			out_len : DINT;
+			out_start : DINT;
+			out_end : DINT;
+			i : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		in_len := LEN(in);
+		
+		out_start := _firstIndexOf(out);
+		out_end := _lastIndexOf(out);
+		out_len := out_end - out_start + 1;
+		
+		IF in_len < out_len THEN
+			i_end := INT_TO_DINT(in_len);
+		ELSE
+			i_end := out_len;
+		END_IF;
+		
+		FOR i := 1 TO i_end DO
+			IF in[i] > 127 THEN
+				out[out_start + i - 1] := 63; // Questionmark '?'
+			ELSE	
+				out[out_start + i - 1] := in[i];
+			END_IF;
+		END_FOR;
+	END_FUNCTION
+	
+	// Encodes given string into given BYTE array using Latin 1 (ISO 8859-1).
+	// If target array is too small, given string will be cut. If target array is too large, remaining bytes will be set to NULL (0).
+	FUNCTION ENCODE_STRING_LATIN1 : VOID
+		VAR_INPUT
+			in : STRING[254];
+		END_VAR
+		
+		VAR_IN_OUT
+			out : ARRAY[..] OF BYTE;
+		END_VAR
+		
+		VAR_TEMP
+			in_len : INT;
+			out_len : DINT;
+			out_start : DINT;
+			out_end : DINT;
+			i : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		in_len := LEN(in);
+		
+		out_start := _firstIndexOf(out);
+		out_end := _lastIndexOf(out);
+		out_len := out_end - out_start + 1;
+		
+		IF in_len < out_len THEN
+			i_end := INT_TO_DINT(in_len);
+		ELSE
+			i_end := out_len;
+		END_IF;
+		
+		FOR i := 1 TO i_end DO
+			out[out_start + i - 1] := in[i];
+		END_FOR;
+	END_FUNCTION
+	
+	// Decodes given BYTE array to a string using ASCII. Decoding stops on first NULL (0; if present).
+	// If source array is bigger than 254 bytes, returned string will be cut to string's max. length of 254.
+	FUNCTION DECODE_STRING_ASCII : STRING[254]
+		VAR_INPUT
+			in : ARRAY[..] OF BYTE;
+		END_VAR
+		
+		VAR_TEMP
+			out : STRING[254];
+			in_start : DINT;
+			in_end : DINT;
+			i_in : DINT;
+			i_out : DINT;
+		END_VAR
+		
+		in_start := _firstIndexOf(in);
+		in_end := _lastIndexOf(in);
+		
+		FOR i_in := in_start TO in_end DO
+			i_out := i_in - in_start + 1;
+			
+			IF in[i_in] = 0 THEN
+				DECODE_STRING_ASCII := LEFT(out, DINT_TO_INT(i_out -1));
+				RETURN;
+			ELSIF in[i_in] > 127 THEN
+				out[i_out] := 63; // Questionmark '?'
+			ELSE	
+				out[i_out] := in[i_in];
+			END_IF;
+		END_FOR;
+		
+		DECODE_STRING_ASCII := LEFT(out, DINT_TO_INT(i_out));
+	END_FUNCTION
+	
+	// Decodes given BYTE array to a string using Latin 1 (ISO 8859-1). Decoding stops on first NULL (0; if present).
+	// If source array is bigger than 254 bytes, returned string will be cut to string's max. length of 254.
+	FUNCTION DECODE_STRING_LATIN1 : STRING[254]
+		VAR_INPUT
+			in : ARRAY[..] OF BYTE;
+		END_VAR
+		
+		VAR_TEMP
+			out : STRING[254];
+			in_start : DINT;
+			in_end : DINT;
+			i_in : DINT;
+			i_out : DINT;
+		END_VAR
+		
+		in_start := _firstIndexOf(in);
+		in_end := _lastIndexOf(in);
+		
+		FOR i_in := in_start TO in_end DO
+			i_out := i_in - in_start + 1;
+			
+			IF in[i_in] = 0 THEN
+				DECODE_STRING_LATIN1 := LEFT(out, DINT_TO_INT(i_out -1));
+				RETURN;
+			ELSE	
+				out[i_out] := in[i_in];
+			END_IF;
+		END_FOR;
+		
+		DECODE_STRING_LATIN1 := LEFT(out, DINT_TO_INT(i_out));
+	END_FUNCTION
+		
 	
 	FUNCTION USINT_TO_STRING : STRING[3]
 		VAR_INPUT
