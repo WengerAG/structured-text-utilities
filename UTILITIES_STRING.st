@@ -17,6 +17,9 @@ INTERFACE
 	
 	FUNCTION COMPARE_STRINGS;
 	
+	FUNCTION PAD_STRING_LEFT;
+	FUNCTION PAD_STRING_RIGHT;
+	
 	FUNCTION ENCODE_STRING_ASCII;
 	FUNCTION ENCODE_STRING_LATIN1;
 	FUNCTION DECODE_STRING_ASCII;
@@ -210,6 +213,81 @@ IMPLEMENTATION
 	END_FUNCTION
 	
 	
+	// Pads given string to specified length with given padding (from the left).
+	// If original string's length is already equal or greater than required length, it will be returned unchanged.
+	FUNCTION PAD_STRING_LEFT : STRING[254]
+		VAR_INPUT
+			in : STRING[254];
+			length_req : USINT;
+			padding : STRING;
+		END_VAR
+		
+		VAR_TEMP
+			in_len : INT;
+			out : STRING[254];
+			out_len : INT;
+		END_VAR
+		
+		in_len := LEN(in);
+		
+		IF in_len >= length_req THEN
+			PAD_STRING_LEFT := in;
+			RETURN;
+		END_IF;
+		
+		out := in;
+		out_len := LEN(out);
+		
+		WHILE out_len < length_req DO
+			out := CONCAT(padding, out);
+			out_len := LEN(out);
+		END_WHILE;
+		
+		IF out_len > length_req THEN
+			out := RIGHT(out, length_req);
+		END_IF;
+		
+		PAD_STRING_LEFT := out;
+	END_FUNCTION
+	
+	// Pads given string to specified length with given padding (from the right).
+	// If original string's length is already equal or greater than required length, it will be returned unchanged.
+	FUNCTION PAD_STRING_RIGHT : STRING[254]
+		VAR_INPUT
+			in : STRING[254];
+			length_req : USINT;
+			padding : STRING;
+		END_VAR
+		
+		VAR_TEMP
+			in_len : INT;
+			out : STRING[254];
+			out_len : INT;
+		END_VAR
+		
+		in_len := LEN(in);
+		
+		IF in_len >= length_req THEN
+			PAD_STRING_RIGHT := in;
+			RETURN;
+		END_IF;
+		
+		out := in;
+		out_len := LEN(out);
+		
+		WHILE out_len < length_req DO
+			out := CONCAT(out, padding);
+			out_len := LEN(out);
+		END_WHILE;
+		
+		IF out_len > length_req THEN
+			out := LEFT(out, length_req);
+		END_IF;
+		
+		PAD_STRING_RIGHT := out;
+	END_FUNCTION
+	
+	
 	// Encodes given string into given BYTE array using ASCII.
 	// If target array is too small, given string will be cut. If target array is too large, remaining bytes will be set to NULL (0).
 	FUNCTION ENCODE_STRING_ASCII : VOID
@@ -353,7 +431,7 @@ IMPLEMENTATION
 		
 		DECODE_STRING_LATIN1 := LEFT(out, DINT_TO_INT(i_out));
 	END_FUNCTION
-		
+	
 	
 	FUNCTION USINT_TO_STRING : STRING[3]
 		VAR_INPUT
