@@ -31,6 +31,7 @@ INTERFACE
 			day : USINT; // numeric day of month (e.g. 31)
 			day_of_year : UINT; // numeric day of year (e.g. 304)
 			day_of_week : USINT; // numeric day of week (Monday = 1 <-> Sunday = 7; e.g. 4)
+			week_of_year : USINT; // numeric week of year (e.g. 44)
 			iso8601 : STRING[10]; // date in ISO 8601 representation (e.g. '2019-10-31')
 		END_STRUCT
 		
@@ -51,6 +52,7 @@ INTERFACE
 			day : USINT; // numeric day of month (e.g. 31)
 			day_of_year : UINT; // numeric day of year (e.g. 304)
 			day_of_week : USINT; // numeric day of week (Monday = 1 <-> Sunday = 7; e.g. 4)
+			week_of_year : USINT; // numeric week of year (e.g. 44)
 			hour : USINT; // numeric hour of day (e.g. 21)
 			minute : USINT; // numeric minute of hour (e.g. 34)
 			second : USINT; // numeric second of minute (e.g. 56)
@@ -191,6 +193,9 @@ IMPLEMENTATION
 		VAR_TEMP
 			in_array : ARRAY[0..3] OF BYTE; // Array for marshalling
 			days_since_1992 : UDINT;
+			anchor_in_calendar_week : DINT;
+			start_of_year : DINT;
+			start_of_year_before : DINT;
 			days_of_year_left : UDINT;
 			days_of_year : UINT;
 			days_of_month_left : UDINT;
@@ -203,6 +208,10 @@ IMPLEMENTATION
 		
 		in_array := ANYTYPE_TO_LITTLEBYTEARRAY(in, 0);
 		days_since_1992 := LITTLEBYTEARRAY_TO_ANYTYPE(in_array, 0);
+		days_since_1992 := days_since_1992 -1; // 1992-01-01 is encoded as 1, not 0 :-/
+		
+		start_of_year := 0;
+		start_of_year_before := -365;
 		days_of_year_left := days_since_1992;
 		
 		FOR year := 1992 TO 2200 DO
@@ -214,7 +223,7 @@ IMPLEMENTATION
 				days_of_year := 365;
 			END_IF;
 			
-			IF days_of_year_left > days_of_year THEN
+			IF days_of_year_left >= days_of_year THEN
 				days_of_year_left := days_of_year_left - days_of_year;
 			ELSE
 				days_of_month_left := days_of_year_left;
@@ -226,14 +235,14 @@ IMPLEMENTATION
 						2: IF year_is_leap THEN days_of_month := 29; ELSE days_of_month := 28; END_IF;
 					END_CASE;
 					
-					IF days_of_month_left > days_of_month THEN
+					IF days_of_month_left >= days_of_month THEN
 						days_of_month_left := days_of_month_left - days_of_month;
 					ELSE
 						out.year := year;
 						out.year_of_century := UINT_TO_USINT(year MOD 100);
 						out.month := SINT_TO_USINT(month);
-						out.day := UDINT_TO_USINT(days_of_month_left);
-						out.day_of_year := UDINT_TO_UINT(days_of_year_left);
+						out.day := UDINT_TO_USINT(days_of_month_left + 1);
+						out.day_of_year := UDINT_TO_UINT(days_of_year_left + 1);
 						
 						EXIT;
 					END_IF;
@@ -241,9 +250,19 @@ IMPLEMENTATION
 				
 				EXIT;
 			END_IF;
+			
+			start_of_year_before := start_of_year;
+			start_of_year := start_of_year + days_of_year;
 		END_FOR;
 		
-		out.day_of_week := UDINT_TO_USINT((((days_since_1992 MOD 7) + 1) MOD 7) + 1);
+		out.day_of_week := UDINT_TO_USINT((days_since_1992 MOD 7 + 2) MOD 7 + 1);
+		
+		anchor_in_calendar_week := UDINT_TO_DINT(days_since_1992) - out.day_of_week + 4;
+		IF anchor_in_calendar_week < start_of_year THEN
+			out.week_of_year := DINT_TO_USINT((anchor_in_calendar_week - (start_of_year_before + 3) + ((start_of_year_before + 3) MOD 7 + 2) MOD 7 + 1 - 4) / 7 + 1);
+		ELSE
+			out.week_of_year := DINT_TO_USINT((anchor_in_calendar_week - (start_of_year + 3) + ((start_of_year + 3) MOD 7 + 2) MOD 7 + 1 - 4) / 7 + 1);
+		END_IF;
 		
 		out.iso8601 := CONCAT(UINT_TO_STRING(out.year), '-');
 		
@@ -283,6 +302,7 @@ IMPLEMENTATION
 		out.day := dat_parts.day;
 		out.day_of_year := dat_parts.day_of_year;
 		out.day_of_week := dat_parts.day_of_week;
+		out.week_of_year := dat_parts.week_of_year;
 		
 		out.hour := tod_parts.hour;
 		out.minute := tod_parts.minute;
