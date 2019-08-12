@@ -25,11 +25,11 @@ INTERFACE
 		
 		// Contains all parts of a local date (year, month, day, etc.).
 		DATE_PARTS : STRUCT
-			year : INT; // numeric year (e.g. 2019)
-			year_of_century : SINT; // numeric year of century (e.g. 19)
+			year : UINT; // numeric year (e.g. 2019)
+			year_of_century : USINT; // numeric year of century (e.g. 19)
 			month : USINT; // numeric month of year (e.g. 10)
 			day : USINT; // numeric day of month (e.g. 31)
-			day_of_year : USINT; // numeric day of year (e.g. 304)
+			day_of_year : UINT; // numeric day of year (e.g. 304)
 			day_of_week : USINT; // numeric day of week (Monday = 1 <-> Sunday = 7; e.g. 4)
 			iso8601 : STRING[10]; // date in ISO 8601 representation (e.g. '2019-10-31')
 		END_STRUCT
@@ -45,11 +45,11 @@ INTERFACE
 		
 		// Contains all parts of a local date (year, month, day, etc.) and time (hours, minutes, seconds, etc.).
 		DATE_AND_TIME_PARTS : STRUCT
-			year : INT; // numeric year (e.g. 2019)
-			year_of_century : SINT; // numeric year of century (e.g. 19)
+			year : UINT; // numeric year (e.g. 2019)
+			year_of_century : USINT; // numeric year of century (e.g. 19)
 			month : USINT; // numeric month of year (e.g. 10)
 			day : USINT; // numeric day of month (e.g. 31)
-			day_of_year : USINT; // numeric day of year (e.g. 304)
+			day_of_year : UINT; // numeric day of year (e.g. 304)
 			day_of_week : USINT; // numeric day of week (Monday = 1 <-> Sunday = 7; e.g. 4)
 			hour : USINT; // numeric hour of day (e.g. 21)
 			minute : USINT; // numeric minute of hour (e.g. 34)
@@ -192,11 +192,11 @@ IMPLEMENTATION
 			in_array : ARRAY[0..3] OF BYTE; // Array for marshalling
 			days_since_1992 : UDINT;
 			days_of_year_left : UDINT;
-			days_of_year : UDINT;
+			days_of_year : UINT;
 			days_of_month_left : UDINT;
 			days_of_month : UDINT;
 			year_is_leap : BOOL;
-			year : DINT;
+			year : UINT;
 			month : SINT;
 			out : DATE_PARTS;
 		END_VAR
@@ -229,11 +229,11 @@ IMPLEMENTATION
 					IF days_of_month_left > days_of_month THEN
 						days_of_month_left := days_of_month_left - days_of_month;
 					ELSE
-						out.year := DINT_TO_INT(year);
-						out.year_of_century := DINT_TO_SINT(year MOD 100);
+						out.year := year;
+						out.year_of_century := UINT_TO_USINT(year MOD 100);
 						out.month := SINT_TO_USINT(month);
 						out.day := UDINT_TO_USINT(days_of_month_left);
-						out.day_of_year := UDINT_TO_USINT(days_of_year_left);
+						out.day_of_year := UDINT_TO_UINT(days_of_year_left);
 						
 						EXIT;
 					END_IF;
@@ -245,7 +245,7 @@ IMPLEMENTATION
 		
 		out.day_of_week := UDINT_TO_USINT((((days_since_1992 MOD 7) + 1) MOD 7) + 1);
 		
-		out.iso8601 := CONCAT(INT_TO_STRING(out.year), '-');
+		out.iso8601 := CONCAT(UINT_TO_STRING(out.year), '-');
 		
 		IF out.month >= 10 THEN
 			out.iso8601 := CONCAT3(out.iso8601, USINT_TO_STRING(out.month), '-');
