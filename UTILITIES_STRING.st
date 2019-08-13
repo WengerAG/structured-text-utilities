@@ -196,11 +196,7 @@ IMPLEMENTATION
 		in1_len := LEN(in1);
 		in2_len := LEN(in2);
 		
-		IF in1_len < in2_len THEN
-			i_end := in1_len;
-		ELSE
-			i_end := in2_len;
-		END_IF;
+		i_end := MIN(in1_len, in2_len);
 		
 		FOR i := 0 TO i_end DO
 			IF in1[i] <> in2[i] THEN
@@ -305,7 +301,6 @@ IMPLEMENTATION
 			out_start : DINT;
 			out_end : DINT;
 			i : DINT;
-			i_end : DINT;
 		END_VAR
 		
 		in_len := LEN(in);
@@ -314,14 +309,10 @@ IMPLEMENTATION
 		out_end := _lastIndexOf(out);
 		out_len := out_end - out_start + 1;
 		
-		IF in_len < out_len THEN
-			i_end := INT_TO_DINT(in_len);
-		ELSE
-			i_end := out_len;
-		END_IF;
-		
-		FOR i := 1 TO i_end DO
-			IF in[i] > 127 THEN
+		FOR i := 1 TO out_len DO
+			IF i > in_len THEN
+				out[out_start + i - 1] := 0; // NULL
+			ELSIF in[i] > 127 THEN
 				out[out_start + i - 1] := 63; // Questionmark '?'
 			ELSE	
 				out[out_start + i - 1] := in[i];
@@ -346,7 +337,6 @@ IMPLEMENTATION
 			out_start : DINT;
 			out_end : DINT;
 			i : DINT;
-			i_end : DINT;
 		END_VAR
 		
 		in_len := LEN(in);
@@ -355,14 +345,12 @@ IMPLEMENTATION
 		out_end := _lastIndexOf(out);
 		out_len := out_end - out_start + 1;
 		
-		IF in_len < out_len THEN
-			i_end := INT_TO_DINT(in_len);
-		ELSE
-			i_end := out_len;
-		END_IF;
-		
-		FOR i := 1 TO i_end DO
-			out[out_start + i - 1] := in[i];
+		FOR i := 1 TO out_len DO
+			IF i > in_len THEN
+				out[out_start + i - 1] := 0; // NULL
+			ELSE
+				out[out_start + i - 1] := in[i];
+			END_IF;
 		END_FOR;
 	END_FUNCTION
 	
