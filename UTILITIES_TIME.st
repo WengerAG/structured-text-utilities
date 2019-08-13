@@ -10,7 +10,13 @@ INTERFACE
 	FUNCTION TIME_OF_DAY_TO_PARTS;
 	FUNCTION DATE_TO_PARTS;
 	FUNCTION DATE_AND_TIME_TO_PARTS;
-	
+	FUNCTION DAYS_IN_YEAR;
+	FUNCTION DAY_OF_WEEK;
+	FUNCTION DAY_OF_YEAR;
+	FUNCTION WEEK_OF_YEAR;
+	FUNCTION DATE_TO_DAY;
+	FUNCTION DATE_TO_MONTH;
+	FUNCTION DATE_TO_YEAR;
 	
 	TYPE
 		// Contains all parts of a positive duration (days, hours, minutes, seconds, etc.).
@@ -312,5 +318,116 @@ IMPLEMENTATION
 		out.iso8601 := CONCAT3(dat_parts.iso8601, 'T', tod_parts.iso8601);
 		
 		DATE_AND_TIME_TO_PARTS := out;
+	END_FUNCTION
+
+	FUNCTION DAYS_IN_YEAR : UINT
+		VAR_INPUT
+			year: UINT; (* Given year *)
+		END_VAR
+		
+		IF year MOD 4 = 0 AND (year = 2000 OR year MOD 100 <> 0) THEN
+			DAYS_IN_YEAR := 366;
+		ELSE
+			DAYS_IN_YEAR := 365;
+		END_IF;
+	END_FUNCTION
+
+	FUNCTION DAY_OF_WEEK : UINT
+		VAR_INPUT
+			cur_date: DATE; (* Current date *)
+			fd:       BOOL; (* TRUE - first day Monday, FALSE - first day Sunday *)
+		END_VAR
+		VAR
+			correction : UINT := 4;
+		END_VAR
+
+		IF fd THEN
+			correction := 3;
+		END_IF;
+
+		DAY_OF_WEEK := DWORD_TO_UINT(((DATE_TO_DWORD(cur_date) / 86400) + correction) MOD 7);
+	END_FUNCTION
+
+	FUNCTION DAY_OF_YEAR : UINT
+		VAR_INPUT
+			month: UINT; (* Current month *)
+			day:   UINT; (* Current day *)
+		END_VAR
+		VAR
+			months_days: ARRAY[1..12] OF USINT := [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+			i: USINT;
+		END_VAR
+
+		FOR i := 1 TO 12 DO
+			IF i >= month THEN
+				EXIT;
+			END_IF;
+
+			IF i <> 2 THEN
+				DAY_OF_YEAR := DAY_OF_YEAR + months_days[i];
+			ELSE
+				IF DAYS_IN_YEAR() > 365 THEN
+					DAY_OF_YEAR := DAY_OF_YEAR + 29;
+				ELSE
+					DAY_OF_YEAR := DAY_OF_YEAR + 28;
+				END_IF;
+			END_IF;
+		END_FOR;
+
+		DAY_OF_YEAR := DAY_OF_YEAR + day;
+	END_FUNCTION
+
+	FUNCTION WEEK_OF_YEAR : UINT
+		VAR_INPUT
+			cur_date: DATE; (* Current date *);
+			fd:       BOOL; (* TRUE - first day Monday, FALSE - first day Sunday *)
+		END_VAR
+		VAR
+			Variable: BOOL; (* Comment *)
+		END_VAR
+
+		WEEK_OF_YEAR := ((DAY_OF_YEAR(cur_date) + 6) / 7);
+		IF 
+			DAY_OF_WEEK(cur_date, fd) < 
+			DAY_OF_WEEK(STRING_TO_DATE(CONCAT3('D#', DATE_TO_YEAR(cur_date),'-01-01')), fd) 
+		THEN
+			WEEK_OF_YEAR := WEEK_OF_YEAR + 1;
+		END_IF;
+	END_FUNCTION
+
+	FUNCTION DATE_TO_YEAR : UINT
+		VAR_INPUT
+			cur_date: DATE; (* Current date *);
+		END_VAR
+		VAR_TEMP
+			str: STRING[25]; (* Temp strint *)
+		END_VAR
+
+		str := DATE_TO_STRING(cur_date); // convert to `D#2000-12-30`
+		DATE_TO_YEAR := STRING_TO_UINT(MID(str, 3, 4));
+	END_FUNCTION
+	
+	FUNCTION DATE_TO_MONTH : UINT
+		VAR_INPUT
+			cur_date: DATE; (* Current date *);
+		END_VAR
+		VAR_TEMP
+			str: STRING[25]; (* Temp strint *)
+		END_VAR
+
+		str := DATE_TO_STRING(cur_date); // convert to `D#2000-12-30`
+		DATE_TO_MONTH := STRING_TO_UINT(MID(str, 8, 2));
+	END_FUNCTION
+
+	FUNCTION DATE_TO_DAY : UINT
+		VAR_INPUT
+			cur_date: DATE; (* Current date *);
+		END_VAR
+		VAR_TEMP
+			str: STRING[25]; (* Temp strint *)
+		END_VAR
+
+		str := DATE_TO_STRING(cur_date); // convert to `D#2000-12-30`
+		DATE_TO_DAY := STRING_TO_UINT(MID(str, 11, 2));
 	END_FUNCTION
 END_IMPLEMENTATION
