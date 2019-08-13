@@ -378,6 +378,9 @@ IMPLEMENTATION
 			IF in[i_in] = 0 THEN
 				DECODE_STRING_ASCII := LEFT(out, DINT_TO_INT(i_out -1));
 				RETURN;
+			ELSIF i_out > 254 THEN
+				DECODE_STRING_ASCII := out;
+				RETURN;
 			ELSIF in[i_in] > 127 THEN
 				out[i_out] := 63; // Questionmark '?'
 			ELSE	
@@ -411,6 +414,9 @@ IMPLEMENTATION
 			
 			IF in[i_in] = 0 THEN
 				DECODE_STRING_LATIN1 := LEFT(out, DINT_TO_INT(i_out -1));
+				RETURN;
+			ELSIF i_out > 254 THEN
+				DECODE_STRING_LATIN1 := out;
 				RETURN;
 			ELSE	
 				out[i_out] := in[i_in];
