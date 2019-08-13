@@ -196,11 +196,7 @@ IMPLEMENTATION
 		in1_len := LEN(in1);
 		in2_len := LEN(in2);
 		
-		IF in1_len < in2_len THEN
-			i_end := in1_len;
-		ELSE
-			i_end := in2_len;
-		END_IF;
+		i_end := MIN(in1_len, in2_len);
 		
 		FOR i := 0 TO i_end DO
 			IF in1[i] <> in2[i] THEN
