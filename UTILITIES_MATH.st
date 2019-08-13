@@ -107,7 +107,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -160,7 +160,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -213,7 +213,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -262,7 +262,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -311,7 +311,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -360,7 +360,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -409,7 +409,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
@@ -458,7 +458,7 @@ IMPLEMENTATION
 		END_FOR;
 		
 		// calculate standard deviation
-		out.std_dev := sqrt(out.sum_sqr / out.count);
+		out.std_dev := SQRT(out.sum_sqr / out.count);
 		
 		// calculate median value
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
