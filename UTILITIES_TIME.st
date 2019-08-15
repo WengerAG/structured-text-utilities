@@ -380,7 +380,7 @@ IMPLEMENTATION
 		GET_DAY_OF_WEEK_INTERNAL := UDINT_TO_USINT((in MOD 7 + 1) MOD 7 + 1);
 	END_FUNCTION
 	
-	// Returns the numeric day of week (from Monday = 1 to Sunday = 7).
+	// Returns the numeric day of week.
 	FUNCTION GET_DAY_OF_WEEK : USINT
 		VAR_INPUT
 			in : DATE;
@@ -412,21 +412,21 @@ IMPLEMENTATION
 			-2, -1,  0: out :=  1;
 			// special handling required for some anchor dates before 2200-12-31
 			76337, 76336, 76335: out := 1;
-			ELSE
-				anchor_date_DISSECTED := DISSECT_DATE_INTERNAL(DINT_TO_UDINT(anchor_date));
-				anchor_date2 := CREATE_DATE_INTERNAL(anchor_date_DISSECTED.year, 1, 4);
-				out := DINT_TO_USINT((
-						anchor_date
-						- UDINT_TO_DINT(anchor_date2)
-						+ USINT_TO_DINT(GET_DAY_OF_WEEK_INTERNAL(anchor_date2))
-						- 4
-					) / 7 + 1);
+		ELSE
+			anchor_date_DISSECTED := DISSECT_DATE_INTERNAL(DINT_TO_UDINT(anchor_date));
+			anchor_date2 := CREATE_DATE_INTERNAL(anchor_date_DISSECTED.year, 1, 4);
+			out := DINT_TO_USINT((
+					anchor_date
+					- UDINT_TO_DINT(anchor_date2)
+					+ USINT_TO_DINT(GET_DAY_OF_WEEK_INTERNAL(anchor_date2))
+					- 4
+				) / 7 + 1);
 		END_CASE;
 		
 		GET_WEEK_OF_YEAR_INTERNAL := out;
 	END_FUNCTION
 	
-	// Returns the numeric week of year (from 1st week = 1 to last week = 51, 52 or 53).
+	// Returns the numeric week of year.
 	FUNCTION GET_WEEK_OF_YEAR : USINT
 		VAR_INPUT
 			in : DATE;
