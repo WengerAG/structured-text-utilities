@@ -20,10 +20,8 @@ INTERFACE
 	FUNCTION PAD_STRING_LEFT;
 	FUNCTION PAD_STRING_RIGHT;
 	
-	FUNCTION ENCODE_STRING_ASCII;
-	FUNCTION ENCODE_STRING_LATIN1;
-	FUNCTION DECODE_STRING_ASCII;
-	FUNCTION DECODE_STRING_LATIN1;
+	FUNCTION ENCODE_STRING;
+	FUNCTION DECODE_STRING;
 	
 	FUNCTION USINT_TO_STRING;
 	FUNCTION SINT_TO_STRING;
@@ -34,6 +32,14 @@ INTERFACE
 	FUNCTION STRING_TO_SINT;
 	FUNCTION STRING_TO_UINT;
 	FUNCTION STRING_TO_INT;
+	
+	
+	TYPE
+		STRING_ENCODING : (
+			ASCII,    // 7-Bit US-ASCII (American Standard Code FOR Information Interchange)
+			ISO8859_1 // 8-Bit ISO 8859-1 (Latin-1; Western-Europe)
+		);
+	END_TYPE
 END_INTERFACE
 
 
@@ -284,11 +290,12 @@ IMPLEMENTATION
 	END_FUNCTION
 	
 	
-	// Encodes given string into given BYTE array using ASCII.
+	// Encodes given string into given BYTE array using given encoding.
 	// If target array is too small, given string will be cut. If target array is too large, remaining bytes will be set to NULL (0).
-	FUNCTION ENCODE_STRING_ASCII : VOID
+	FUNCTION ENCODE_STRING : VOID
 		VAR_INPUT
 			in : STRING[254];
+			encoding : STRING_ENCODING;
 		END_VAR
 		
 		VAR_IN_OUT
@@ -312,7 +319,7 @@ IMPLEMENTATION
 		FOR i := 1 TO out_len DO
 			IF i > in_len THEN
 				out[out_start + i - 1] := 0; // NULL
-			ELSIF in[i] > 127 THEN
+			ELSIF encoding = ASCII AND in[i] > 127 THEN
 				out[out_start + i - 1] := 63; // Questionmark '?'
 			ELSE	
 				out[out_start + i - 1] := in[i];
@@ -320,45 +327,12 @@ IMPLEMENTATION
 		END_FOR;
 	END_FUNCTION
 	
-	// Encodes given string into given BYTE array using Latin 1 (ISO 8859-1).
-	// If target array is too small, given string will be cut. If target array is too large, remaining bytes will be set to NULL (0).
-	FUNCTION ENCODE_STRING_LATIN1 : VOID
-		VAR_INPUT
-			in : STRING[254];
-		END_VAR
-		
-		VAR_IN_OUT
-			out : ARRAY[..] OF BYTE;
-		END_VAR
-		
-		VAR_TEMP
-			in_len : INT;
-			out_len : DINT;
-			out_start : DINT;
-			out_end : DINT;
-			i : DINT;
-		END_VAR
-		
-		in_len := LEN(in);
-		
-		out_start := _firstIndexOf(out);
-		out_end := _lastIndexOf(out);
-		out_len := out_end - out_start + 1;
-		
-		FOR i := 1 TO out_len DO
-			IF i > in_len THEN
-				out[out_start + i - 1] := 0; // NULL
-			ELSE
-				out[out_start + i - 1] := in[i];
-			END_IF;
-		END_FOR;
-	END_FUNCTION
-	
-	// Decodes given BYTE array to a string using ASCII. Decoding stops on first NULL (0; if present).
+	// Decodes given BYTE array to a string using given encoding. Decoding stops on first NULL (0; if present).
 	// If source array is bigger than 254 bytes, returned string will be cut to string's max. length of 254.
-	FUNCTION DECODE_STRING_ASCII : STRING[254]
+	FUNCTION DECODE_STRING : STRING[254]
 		VAR_INPUT
 			in : ARRAY[..] OF BYTE;
+			encoding : STRING_ENCODING;
 		END_VAR
 		
 		VAR_TEMP
@@ -376,54 +350,16 @@ IMPLEMENTATION
 			i_out := i_in - in_start + 1;
 			
 			IF in[i_in] = 0 THEN
-				DECODE_STRING_ASCII := LEFT(out, DINT_TO_INT(i_out -1));
+				DECODE_STRING := LEFT(out, DINT_TO_INT(i_out -1));
 				RETURN;
-			ELSIF i_out > 254 THEN
-				DECODE_STRING_ASCII := out;
-				RETURN;
-			ELSIF in[i_in] > 127 THEN
+			ELSIF encoding = ASCII AND in[i_in] > 127 THEN
 				out[i_out] := 63; // Questionmark '?'
 			ELSE	
 				out[i_out] := in[i_in];
 			END_IF;
 		END_FOR;
 		
-		DECODE_STRING_ASCII := LEFT(out, DINT_TO_INT(i_out));
-	END_FUNCTION
-	
-	// Decodes given BYTE array to a string using Latin 1 (ISO 8859-1). Decoding stops on first NULL (0; if present).
-	// If source array is bigger than 254 bytes, returned string will be cut to string's max. length of 254.
-	FUNCTION DECODE_STRING_LATIN1 : STRING[254]
-		VAR_INPUT
-			in : ARRAY[..] OF BYTE;
-		END_VAR
-		
-		VAR_TEMP
-			out : STRING[254];
-			in_start : DINT;
-			in_end : DINT;
-			i_in : DINT;
-			i_out : DINT;
-		END_VAR
-		
-		in_start := _firstIndexOf(in);
-		in_end := _lastIndexOf(in);
-		
-		FOR i_in := in_start TO in_end DO
-			i_out := i_in - in_start + 1;
-			
-			IF in[i_in] = 0 THEN
-				DECODE_STRING_LATIN1 := LEFT(out, DINT_TO_INT(i_out -1));
-				RETURN;
-			ELSIF i_out > 254 THEN
-				DECODE_STRING_LATIN1 := out;
-				RETURN;
-			ELSE	
-				out[i_out] := in[i_in];
-			END_IF;
-		END_FOR;
-		
-		DECODE_STRING_LATIN1 := LEFT(out, DINT_TO_INT(i_out));
+		DECODE_STRING := LEFT(out, DINT_TO_INT(i_out));
 	END_FUNCTION
 	
 	
