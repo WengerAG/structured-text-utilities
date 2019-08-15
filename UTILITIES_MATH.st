@@ -6,14 +6,14 @@ UNIT UTILITIES_MATH;
 INTERFACE
 	USES UTILITIES_ARRAY;
 	
-	FUNCTION CALCULATE_LREAL_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_REAL_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_DINT_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_UDINT_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_INT_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_UINT_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_SINT_ARRAY_STATISTICS;
-	FUNCTION CALCULATE_USINT_ARRAY_STATISTICS;
+	FUNCTION CALCULATE_STATISTICS_OF_LREAL_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_REAL_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_DINT_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_UDINT_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_INT_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_UINT_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_SINT_ARRAY;
+	FUNCTION CALCULATE_STATISTICS_OF_USINT_ARRAY;
 	
 	FUNCTION ROUND_LREAL;
 	FUNCTION ROUND_REAL;
@@ -69,7 +69,7 @@ END_INTERFACE
 IMPLEMENTATION
 	// Calculates statistics of given array containing LREAL values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_LREAL_ARRAY_STATISTICS : FLOAT_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_LREAL_ARRAY : FLOAT_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF LREAL;
 		END_VAR
@@ -117,12 +117,12 @@ IMPLEMENTATION
 			out.med_val := (data[i] + data[i + 1]) / 2;
 		END_IF;
 		
-		CALCULATE_LREAL_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_LREAL_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing REAL values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_REAL_ARRAY_STATISTICS : FLOAT_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_REAL_ARRAY : FLOAT_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF REAL;
 		END_VAR
@@ -170,12 +170,12 @@ IMPLEMENTATION
 			out.med_val := (data[i] + data[i + 1]) / 2;
 		END_IF;
 		
-		CALCULATE_REAL_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_REAL_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing DINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_DINT_ARRAY_STATISTICS : INTEGRAL_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_DINT_ARRAY : INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF DINT;
 		END_VAR
@@ -219,12 +219,12 @@ IMPLEMENTATION
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
-		CALCULATE_DINT_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_DINT_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing UDINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_UDINT_ARRAY_STATISTICS : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_UDINT_ARRAY : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF UDINT;
 		END_VAR
@@ -268,12 +268,12 @@ IMPLEMENTATION
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
-		CALCULATE_UDINT_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_UDINT_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing INT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_INT_ARRAY_STATISTICS : INTEGRAL_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_INT_ARRAY : INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF INT;
 		END_VAR
@@ -317,12 +317,12 @@ IMPLEMENTATION
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
-		CALCULATE_INT_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_INT_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing UINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_UINT_ARRAY_STATISTICS : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_UINT_ARRAY : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF UINT;
 		END_VAR
@@ -366,12 +366,12 @@ IMPLEMENTATION
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
-		CALCULATE_UINT_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_UINT_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing SINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_SINT_ARRAY_STATISTICS : INTEGRAL_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_SINT_ARRAY : INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF SINT;
 		END_VAR
@@ -415,12 +415,12 @@ IMPLEMENTATION
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
-		CALCULATE_SINT_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_SINT_ARRAY := out;
 	END_FUNCTION
 	
 	// Calculates statistics of given array containing USINT values.
 	// ATTENTION: due to limitations of ST given array will be sorted. If order should be prevented, array MUST be copied first.
-	FUNCTION CALCULATE_USINT_ARRAY_STATISTICS : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
+	FUNCTION CALCULATE_STATISTICS_OF_USINT_ARRAY : UNSIGNED_INTEGRAL_ARRAY_STATISTICS
 		VAR_IN_OUT
 			data : ARRAY[..] OF USINT;
 		END_VAR
@@ -464,7 +464,7 @@ IMPLEMENTATION
 		i := i_start + TRUNC((out.count -1) / 2); // index of (lower) median
 		out.med_val := data[i];
 		
-		CALCULATE_USINT_ARRAY_STATISTICS := out;
+		CALCULATE_STATISTICS_OF_USINT_ARRAY := out;
 	END_FUNCTION
 	
 	
