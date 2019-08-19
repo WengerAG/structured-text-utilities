@@ -6,10 +6,6 @@ UNIT UTILITIES_TIME;
 INTERFACE
 	USES UTILITIES_STRING;
 	
-	FUNCTION GET_DAY_OF_WEEK;
-	FUNCTION GET_DAY_OF_YEAR;
-	FUNCTION GET_WEEK_OF_YEAR;
-	
 	FUNCTION CREATE_TIME;
 	FUNCTION CREATE_TIME_OF_DAY;
 	FUNCTION CREATE_DATE;
@@ -19,6 +15,10 @@ INTERFACE
 	FUNCTION DISSECT_TIME_OF_DAY;
 	FUNCTION DISSECT_DATE;
 	FUNCTION DISSECT_DATE_AND_TIME;
+	
+	FUNCTION GET_DAY_OF_WEEK;
+	FUNCTION GET_DAY_OF_YEAR;
+	FUNCTION GET_WEEK_OF_YEAR;
 	
 	FUNCTION FORMAT_TIME;
 	FUNCTION FORMAT_TIME_DISSECTED;
@@ -371,107 +371,6 @@ IMPLEMENTATION
 	END_FUNCTION
 	
 	
-	// INTERNAL: Returns the numeric day of week (from Monday = 1 to Sunday = 7).
-	FUNCTION GET_DAY_OF_WEEK_INTERNAL : USINT
-		VAR_INPUT
-			in : UDINT;
-		END_VAR
-		
-		GET_DAY_OF_WEEK_INTERNAL := UDINT_TO_USINT((in MOD 7 + 1) MOD 7 + 1);
-	END_FUNCTION
-	
-	// Returns the numeric day of week.
-	FUNCTION GET_DAY_OF_WEEK : USINT
-		VAR_INPUT
-			in : DATE;
-			kind : DAY_OF_WEEK_TYPE; // currently, only ISO 8601 is supported
-		END_VAR
-		
-		GET_DAY_OF_WEEK := GET_DAY_OF_WEEK_INTERNAL(DATE_TO_UDINT_INTERNAL(in));
-	END_FUNCTION
-	
-	
-	// INTERNAL: Returns the numeric week of year (from 1st week = 1 to last week = 52 or 53).
-	FUNCTION GET_WEEK_OF_YEAR_INTERNAL : USINT
-		VAR_INPUT
-			in : UDINT;
-		END_VAR
-		
-		VAR_TEMP
-			anchor_date : DINT;
-			anchor_date_DISSECTED : DATE_DISSECTED;
-			anchor_date2 : UDINT;
-			out : USINT;
-		END_VAR
-		
-		anchor_date := UDINT_TO_DINT(in) - GET_DAY_OF_WEEK_INTERNAL(in) + 4;
-		
-		CASE anchor_date OF
-			// special handling required for some anchor dates before 1992-01-01
-			-5, -4, -3: out := 52;
-			-2, -1,  0: out :=  1;
-			// special handling required for some anchor dates before 2200-12-31
-			76337, 76336, 76335: out := 1;
-		ELSE
-			anchor_date_DISSECTED := DISSECT_DATE_INTERNAL(DINT_TO_UDINT(anchor_date));
-			anchor_date2 := CREATE_DATE_INTERNAL(anchor_date_DISSECTED.year, 1, 4);
-			out := DINT_TO_USINT((
-					anchor_date
-					- UDINT_TO_DINT(anchor_date2)
-					+ USINT_TO_DINT(GET_DAY_OF_WEEK_INTERNAL(anchor_date2))
-					- 4
-				) / 7 + 1);
-		END_CASE;
-		
-		GET_WEEK_OF_YEAR_INTERNAL := out;
-	END_FUNCTION
-	
-	// Returns the numeric week of year.
-	FUNCTION GET_WEEK_OF_YEAR : USINT
-		VAR_INPUT
-			in : DATE;
-			kind : WEEK_OF_YEAR_TYPE; // currently, only ISO 8601 is supported
-		END_VAR
-		
-		GET_WEEK_OF_YEAR := GET_WEEK_OF_YEAR_INTERNAL(DATE_TO_UDINT_INTERNAL(in));
-	END_FUNCTION
-	
-	
-	// INTERNAL: Returns the numeric day of year (from 1st of January = 1 to 31th of December = 365 or 366).
-	FUNCTION GET_DAY_OF_YEAR_INTERNAL : UINT
-		VAR_INPUT
-			in : UDINT;
-		END_VAR
-		
-		VAR_TEMP
-			year_lookup_start : DINT;
-			year_lookup_end : DINT;
-			year : DINT;
-			start_of_year : UDINT;
-		END_VAR
-		
-		year_lookup_start := MIN(MAX(1992 + TRUNC((in - 1) / 366), 1992), 2200);
-		year_lookup_end := MIN(MAX(1992 + TRUNC((in - 1) / 365), 1992), 2200);
-		
-		FOR year := year_lookup_start TO year_lookup_end DO
-			IF Start_Of_Months_Of_Years_Values[year][1] <= in THEN
-				start_of_year := Start_Of_Months_Of_Years_Values[year][1];
-			END_IF;
-		END_FOR;
-		
-		GET_DAY_OF_YEAR_INTERNAL := UDINT_TO_UINT(in - start_of_year + 1);
-	END_FUNCTION
-	
-	// Returns the numeric day of year (from 1st of January = 1 to 31th of December = 365 or 366).
-	FUNCTION GET_DAY_OF_YEAR : UINT
-		VAR_INPUT
-			in : DATE;
-		END_VAR
-		
-		GET_DAY_OF_YEAR := GET_DAY_OF_YEAR_INTERNAL(DATE_TO_UDINT_INTERNAL(in));
-	END_FUNCTION
-	
-	
 	// INTERNAL: Creates a TIME using given values.
 	FUNCTION CREATE_TIME_INTERNAL : UDINT
 		VAR_INPUT
@@ -724,15 +623,106 @@ IMPLEMENTATION
 	END_FUNCTION
 	
 	
-	// Formats given duration using specified format and returns created string.
-	FUNCTION FORMAT_TIME : STRING[18]
+	// INTERNAL: Returns the numeric day of week (from Monday = 1 to Sunday = 7).
+	FUNCTION GET_DAY_OF_WEEK_INTERNAL : USINT
 		VAR_INPUT
-			in : TIME;
-			format : TIME_FORMAT;
+			in : UDINT;
 		END_VAR
 		
-		FORMAT_TIME := FORMAT_TIME_DISSECTED(DISSECT_TIME(in),format);
+		GET_DAY_OF_WEEK_INTERNAL := UDINT_TO_USINT((in MOD 7 + 1) MOD 7 + 1);
 	END_FUNCTION
+	
+	// Returns the numeric day of week.
+	FUNCTION GET_DAY_OF_WEEK : USINT
+		VAR_INPUT
+			in : DATE;
+			kind : DAY_OF_WEEK_TYPE; // currently, only ISO 8601 is supported
+		END_VAR
+		
+		GET_DAY_OF_WEEK := GET_DAY_OF_WEEK_INTERNAL(DATE_TO_UDINT_INTERNAL(in));
+	END_FUNCTION
+	
+	
+	// INTERNAL: Returns the numeric week of year (from 1st week = 1 to last week = 52 or 53).
+	FUNCTION GET_WEEK_OF_YEAR_INTERNAL : USINT
+		VAR_INPUT
+			in : UDINT;
+		END_VAR
+		
+		VAR_TEMP
+			anchor_date : DINT;
+			anchor_date_DISSECTED : DATE_DISSECTED;
+			anchor_date2 : UDINT;
+			out : USINT;
+		END_VAR
+		
+		anchor_date := UDINT_TO_DINT(in) - GET_DAY_OF_WEEK_INTERNAL(in) + 4;
+		
+		CASE anchor_date OF
+			// special handling required for some anchor dates before 1992-01-01
+			-5, -4, -3: out := 52;
+			-2, -1,  0: out :=  1;
+			// special handling required for some anchor dates before 2200-12-31
+			76337, 76336, 76335: out := 1;
+		ELSE
+			anchor_date_DISSECTED := DISSECT_DATE_INTERNAL(DINT_TO_UDINT(anchor_date));
+			anchor_date2 := CREATE_DATE_INTERNAL(anchor_date_DISSECTED.year, 1, 4);
+			out := DINT_TO_USINT((
+					anchor_date
+					- UDINT_TO_DINT(anchor_date2)
+					+ USINT_TO_DINT(GET_DAY_OF_WEEK_INTERNAL(anchor_date2))
+					- 4
+				) / 7 + 1);
+		END_CASE;
+		
+		GET_WEEK_OF_YEAR_INTERNAL := out;
+	END_FUNCTION
+	
+	// Returns the numeric week of year.
+	FUNCTION GET_WEEK_OF_YEAR : USINT
+		VAR_INPUT
+			in : DATE;
+			kind : WEEK_OF_YEAR_TYPE; // currently, only ISO 8601 is supported
+		END_VAR
+		
+		GET_WEEK_OF_YEAR := GET_WEEK_OF_YEAR_INTERNAL(DATE_TO_UDINT_INTERNAL(in));
+	END_FUNCTION
+	
+	
+	// INTERNAL: Returns the numeric day of year (from 1st of January = 1 to 31th of December = 365 or 366).
+	FUNCTION GET_DAY_OF_YEAR_INTERNAL : UINT
+		VAR_INPUT
+			in : UDINT;
+		END_VAR
+		
+		VAR_TEMP
+			year_lookup_start : DINT;
+			year_lookup_end : DINT;
+			year : DINT;
+			start_of_year : UDINT;
+		END_VAR
+		
+		year_lookup_start := MIN(MAX(1992 + TRUNC((in - 1) / 366), 1992), 2200);
+		year_lookup_end := MIN(MAX(1992 + TRUNC((in - 1) / 365), 1992), 2200);
+		
+		FOR year := year_lookup_start TO year_lookup_end DO
+			IF Start_Of_Months_Of_Years_Values[year][1] <= in THEN
+				start_of_year := Start_Of_Months_Of_Years_Values[year][1];
+			END_IF;
+		END_FOR;
+		
+		GET_DAY_OF_YEAR_INTERNAL := UDINT_TO_UINT(in - start_of_year + 1);
+	END_FUNCTION
+	
+	// Returns the numeric day of year (from 1st of January = 1 to 31th of December = 365 or 366).
+	FUNCTION GET_DAY_OF_YEAR : UINT
+		VAR_INPUT
+			in : DATE;
+		END_VAR
+		
+		GET_DAY_OF_YEAR := GET_DAY_OF_YEAR_INTERNAL(DATE_TO_UDINT_INTERNAL(in));
+	END_FUNCTION
+	
 	
 	// Formats given duration using specified format and returns created string.
 	FUNCTION FORMAT_TIME_DISSECTED : STRING[18]
@@ -768,16 +758,16 @@ IMPLEMENTATION
 		FORMAT_TIME_DISSECTED := out;
 	END_FUNCTION
 	
-	
-	// Formats given time using specified format and returns created string.
-	FUNCTION FORMAT_TIME_OF_DAY : STRING[12]
+	// Formats given duration using specified format and returns created string.
+	FUNCTION FORMAT_TIME : STRING[18]
 		VAR_INPUT
-			in : TIME_OF_DAY;
-			format : TIME_OF_DAY_FORMAT;
+			in : TIME;
+			format : TIME_FORMAT;
 		END_VAR
 		
-		FORMAT_TIME_OF_DAY := FORMAT_TIME_OF_DAY_DISSECTED(DISSECT_TIME_OF_DAY(in),format);
+		FORMAT_TIME := FORMAT_TIME_DISSECTED(DISSECT_TIME(in),format);
 	END_FUNCTION
+	
 	
 	// Formats given time using specified format and returns created string.
 	FUNCTION FORMAT_TIME_OF_DAY_DISSECTED : STRING[12]
@@ -797,16 +787,16 @@ IMPLEMENTATION
 		);
 	END_FUNCTION
 	
-	
-	// Formats given date using specified format and returns created string.
-	FUNCTION FORMAT_DATE : STRING[10]
+	// Formats given time using specified format and returns created string.
+	FUNCTION FORMAT_TIME_OF_DAY : STRING[12]
 		VAR_INPUT
-			in : DATE;
-			format : DATE_FORMAT;
+			in : TIME_OF_DAY;
+			format : TIME_OF_DAY_FORMAT;
 		END_VAR
-			
-		FORMAT_DATE := FORMAT_DATE_DISSECTED(DISSECT_DATE(in), format);
+		
+		FORMAT_TIME_OF_DAY := FORMAT_TIME_OF_DAY_DISSECTED(DISSECT_TIME_OF_DAY(in),format);
 	END_FUNCTION
+	
 	
 	// Formats given date using specified format and returns created string.
 	FUNCTION FORMAT_DATE_DISSECTED : STRING[10]
@@ -824,16 +814,16 @@ IMPLEMENTATION
 		);
 	END_FUNCTION
 	
-	
-	// Formats given date and time using specified format and returns created string.
-	FUNCTION FORMAT_DATE_AND_TIME : STRING[23]
+	// Formats given date using specified format and returns created string.
+	FUNCTION FORMAT_DATE : STRING[10]
 		VAR_INPUT
-			in : DATE_AND_TIME;
-			format : DATE_AND_TIME_FORMAT;
+			in : DATE;
+			format : DATE_FORMAT;
 		END_VAR
-		
-		FORMAT_DATE_AND_TIME := FORMAT_DATE_AND_TIME_DISSECTED(DISSECT_DATE_AND_TIME(in), format);
+			
+		FORMAT_DATE := FORMAT_DATE_DISSECTED(DISSECT_DATE(in), format);
 	END_FUNCTION
+	
 	
 	// Formats given date and time using specified format and returns created string.
 	FUNCTION FORMAT_DATE_AND_TIME_DISSECTED : STRING[23]
@@ -861,5 +851,15 @@ IMPLEMENTATION
 				PAD_STRING_LEFT(UINT_TO_STRING(in.millisecond), 3, '0')
 			)
 		);
+	END_FUNCTION
+	
+	// Formats given date and time using specified format and returns created string.
+	FUNCTION FORMAT_DATE_AND_TIME : STRING[23]
+		VAR_INPUT
+			in : DATE_AND_TIME;
+			format : DATE_AND_TIME_FORMAT;
+		END_VAR
+		
+		FORMAT_DATE_AND_TIME := FORMAT_DATE_AND_TIME_DISSECTED(DISSECT_DATE_AND_TIME(in), format);
 	END_FUNCTION
 END_IMPLEMENTATION
