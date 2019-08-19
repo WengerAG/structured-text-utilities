@@ -53,7 +53,11 @@ INTERFACE
 		END_STRUCT
 		
 		TIME_OF_DAY_FORMAT : (
-			ISO8601 // time of day in ISO 8601 representation (e.g. '21:34:56.789')
+			ISO8601, // time of day in ISO 8601 representation (e.g. '21:34:56.789')
+			ISO8601_HHMM, // time of day in ISO 8601 representation without seconds and milliseconds (e.g. '21:34')
+			ISO8601_HHMM_NODLM, // time of day in ISO 8601 representation without seconds, milliseconds and delimiters (e.g. '2134')
+			ISO8601_HHMMSS, // time of day in ISO 8601 representation without milliseconds (e.g. '213456')
+			ISO8601_HHMMSS_NODLM // time of day in ISO 8601 representation without milliseconds and delimiters (e.g. '21:34:56')
 		);
 		
 		// Contains all parts of a local date (year, month, day, etc.).
@@ -64,7 +68,9 @@ INTERFACE
 		END_STRUCT
 		
 		DATE_FORMAT : (
-			ISO8601 // date in ISO 8601 representation (e.g. '2019-10-31')
+			ISO8601, // date in ISO 8601 representation (e.g. '2019-10-31')
+			ISO8601_NODLM, // date in ISO 8601 representation without delimiters (e.g. '20191031')
+			DIN5008 // date in common DIN 5008:2011 representation (e.g. '31.10.2019')
 		);
 		
 		DAY_OF_WEEK_TYPE : (
@@ -502,10 +508,10 @@ IMPLEMENTATION
 		
 		hours := (minutes - out.minute) / 60;
 		out.hour := UDINT_TO_USINT(hours MOD 24);
-
+		
 		days := (hours - out.hour) / 24;
 		out.day := UDINT_TO_USINT(days);
-
+		
 		DISSECT_TIME := out;
 	END_FUNCTION
 	
@@ -535,7 +541,7 @@ IMPLEMENTATION
 		
 		hours := (minutes - out.minute) / 60;
 		out.hour := UDINT_TO_USINT(hours MOD 24);
-
+		
 		DISSECT_TIME_OF_DAY := out;
 	END_FUNCTION
 	
@@ -730,27 +736,27 @@ IMPLEMENTATION
 			in : TIME_DISSECTED;
 			format : TIME_FORMAT; // currently, only ISO 8601 is supported
 		END_VAR
-			
+		
 		VAR_TEMP
 			out : STRING[18];
 		END_VAR
-					
+		
 		out := 'P';
-			
+		
 		IF in.day <> 0 THEN
 			out := CONCAT3(out, USINT_TO_STRING(in.day), 'D');
 		END_IF;
-
+		
 		out := CONCAT(out, 'T');
-
+		
 		IF in.hour <> 0 THEN
 			out := CONCAT3(out, USINT_TO_STRING(in.hour), 'H');
 		END_IF;
-
+		
 		IF in.minute <> 0 THEN
 			out := CONCAT3(out, USINT_TO_STRING(in.minute), 'M');
 		END_IF;
-
+		
 		IF in.second <> 0 OR in.millisecond <> 0 THEN
 			out := CONCAT5(out, USINT_TO_STRING(in.second), '.', PAD_STRING_LEFT(UINT_TO_STRING(in.millisecond), 3, '0'), 'S');
 		END_IF;
@@ -773,18 +779,41 @@ IMPLEMENTATION
 	FUNCTION FORMAT_TIME_OF_DAY_DISSECTED : STRING[12]
 		VAR_INPUT
 			in : TIME_OF_DAY_DISSECTED;
-			format : TIME_OF_DAY_FORMAT; // currently, only ISO 8601 is supported
+			format : TIME_OF_DAY_FORMAT;
 		END_VAR
 		
-		FORMAT_TIME_OF_DAY_DISSECTED := CONCAT7(
-			PAD_STRING_LEFT(USINT_TO_STRING(in.hour), 2, '0'),
-			':',
-			PAD_STRING_LEFT(USINT_TO_STRING(in.minute), 2, '0'),
-			':',
-			PAD_STRING_LEFT(USINT_TO_STRING(in.second), 2, '0'),
-			'.',
-			PAD_STRING_LEFT(UINT_TO_STRING(in.millisecond), 3, '0')
-		);
+		CASE format OF
+			ISO8601: FORMAT_TIME_OF_DAY_DISSECTED := CONCAT7(
+				PAD_STRING_LEFT(USINT_TO_STRING(in.hour), 2, '0'),
+				':',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.minute), 2, '0'),
+				':',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.second), 2, '0'),
+				'.',
+				PAD_STRING_LEFT(UINT_TO_STRING(in.millisecond), 3, '0')
+			);
+			ISO8601_HHMMSS: FORMAT_TIME_OF_DAY_DISSECTED := CONCAT5(
+				PAD_STRING_LEFT(USINT_TO_STRING(in.hour), 2, '0'),
+				':',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.minute), 2, '0'),
+				':',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.second), 2, '0')
+			);
+			ISO8601_HHMMSS_NODLM: FORMAT_TIME_OF_DAY_DISSECTED := CONCAT3(
+				PAD_STRING_LEFT(USINT_TO_STRING(in.hour), 2, '0'),
+				PAD_STRING_LEFT(USINT_TO_STRING(in.minute), 2, '0'),
+				PAD_STRING_LEFT(USINT_TO_STRING(in.second), 2, '0')
+			);
+			ISO8601_HHMM: FORMAT_TIME_OF_DAY_DISSECTED := CONCAT3(
+				PAD_STRING_LEFT(USINT_TO_STRING(in.hour), 2, '0'),
+				':',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.minute), 2, '0')
+			);
+			ISO8601_HHMM_NODLM: FORMAT_TIME_OF_DAY_DISSECTED := CONCAT(
+				PAD_STRING_LEFT(USINT_TO_STRING(in.hour), 2, '0'),
+				PAD_STRING_LEFT(USINT_TO_STRING(in.minute), 2, '0')
+			);
+		END_CASE;
 	END_FUNCTION
 	
 	// Formats given time using specified format and returns created string.
@@ -802,16 +831,30 @@ IMPLEMENTATION
 	FUNCTION FORMAT_DATE_DISSECTED : STRING[10]
 		VAR_INPUT
 			in : DATE_DISSECTED;
-			format : DATE_FORMAT; // currently, only ISO 8601 is supported
+			format : DATE_FORMAT;
 		END_VAR
-			
-		FORMAT_DATE_DISSECTED := CONCAT5(
-			UINT_TO_STRING(in.year),
-			'-',
-			PAD_STRING_LEFT(USINT_TO_STRING(in.month), 2, '0'),
-			'-',
-			PAD_STRING_LEFT(USINT_TO_STRING(in.day), 2, '0')
-		);
+		
+		CASE format OF
+			ISO8601: FORMAT_DATE_DISSECTED := CONCAT5(
+				UINT_TO_STRING(in.year),
+				'-',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.month), 2, '0'),
+				'-',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.day), 2, '0')
+			);
+			ISO8601_NODLM: FORMAT_DATE_DISSECTED := CONCAT3(
+				UINT_TO_STRING(in.year),
+				PAD_STRING_LEFT(USINT_TO_STRING(in.month), 2, '0'),
+				PAD_STRING_LEFT(USINT_TO_STRING(in.day), 2, '0')
+			);
+			DIN5008: FORMAT_DATE_DISSECTED := CONCAT5(
+				PAD_STRING_LEFT(USINT_TO_STRING(in.day), 2, '0'),
+				'.',
+				PAD_STRING_LEFT(USINT_TO_STRING(in.month), 2, '0'),
+				'.',
+				UINT_TO_STRING(in.year)
+			);
+		END_CASE;
 	END_FUNCTION
 	
 	// Formats given date using specified format and returns created string.
@@ -820,7 +863,7 @@ IMPLEMENTATION
 			in : DATE;
 			format : DATE_FORMAT;
 		END_VAR
-			
+		
 		FORMAT_DATE := FORMAT_DATE_DISSECTED(DISSECT_DATE(in), format);
 	END_FUNCTION
 	
@@ -831,7 +874,7 @@ IMPLEMENTATION
 			in : DATE_AND_TIME_DISSECTED;
 			format : DATE_AND_TIME_FORMAT; // currently, only ISO 8601 is supported
 		END_VAR
-			
+		
 		FORMAT_DATE_AND_TIME_DISSECTED := CONCAT3(
 			CONCAT5(
 				UINT_TO_STRING(in.year),
