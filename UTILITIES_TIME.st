@@ -56,8 +56,8 @@ INTERFACE
 			ISO8601, // time of day in ISO 8601 representation (e.g. '21:34:56.789')
 			ISO8601_HHMM, // time of day in ISO 8601 representation without seconds and milliseconds (e.g. '21:34')
 			ISO8601_HHMM_NODLM, // time of day in ISO 8601 representation without seconds, milliseconds and delimiters (e.g. '2134')
-			ISO8601_HHMMSS, // time of day in ISO 8601 representation without milliseconds (e.g. '213456')
-			ISO8601_HHMMSS_NODLM // time of day in ISO 8601 representation without milliseconds and delimiters (e.g. '21:34:56')
+			ISO8601_HHMMSS, // time of day in ISO 8601 representation without milliseconds (e.g. '21:34:56')
+			ISO8601_HHMMSS_NODLM // time of day in ISO 8601 representation without milliseconds and delimiters (e.g. '213456')
 		);
 		
 		// Contains all parts of a local date (year, month, day, etc.).
