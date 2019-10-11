@@ -349,7 +349,7 @@ IMPLEMENTATION
 		FOR i_in := in_start TO in_end DO
 			i_out := i_in - in_start + 1;
 			
-			IF in[i_in] = 0 THEN
+			IF in[i_in] = 0 OR i_out > 254 THEN
 				DECODE_STRING := LEFT(out, DINT_TO_INT(i_out -1));
 				RETURN;
 			ELSIF encoding = ASCII AND in[i_in] > 127 THEN
