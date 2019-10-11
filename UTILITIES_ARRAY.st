@@ -29,6 +29,18 @@ INTERFACE
 	FUNCTION REVERSE_USINT_ARRAY;
 	
 	FUNCTION REVERSE_STRING_ARRAY;
+	
+	FUNCTION GET_FIRST_INDEX_OF_LREAL_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_REAL_IN_ARRAY;
+	
+	FUNCTION GET_FIRST_INDEX_OF_DINT_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_UDINT_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_INT_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_UINT_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_SINT_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_USINT_IN_ARRAY;
+	
+	FUNCTION GET_FIRST_INDEX_OF_STRING_IN_ARRAY;
 END_INTERFACE
 
 
@@ -495,5 +507,281 @@ IMPLEMENTATION
 			data[i] := data[j];
 			data[j] := temp;
 		END_FOR;
+	END_FUNCTION
+	
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	// ATTENTION: comparing floating point numbers is unsafe (exact equality needed here!).
+	FUNCTION GET_FIRST_INDEX_OF_LREAL_IN_ARRAY : DINT
+		VAR_INPUT
+			in : LREAL;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF LREAL;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_LREAL_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_LREAL_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	// ATTENTION: comparing floating point numbers is unsafe (exact equality needed here!).
+	FUNCTION GET_FIRST_INDEX_OF_REAL_IN_ARRAY : DINT
+		VAR_INPUT
+			in : REAL;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF REAL;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_REAL_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_REAL_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_DINT_IN_ARRAY : DINT
+		VAR_INPUT
+			in : DINT;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF DINT;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_DINT_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_DINT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_UDINT_IN_ARRAY : DINT
+		VAR_INPUT
+			in : UDINT;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF UDINT;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_UDINT_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_UDINT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_INT_IN_ARRAY : DINT
+		VAR_INPUT
+			in : INT;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF INT;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_INT_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_INT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_UINT_IN_ARRAY : DINT
+		VAR_INPUT
+			in : UINT;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF UINT;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_UINT_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_UINT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_SINT_IN_ARRAY : DINT
+		VAR_INPUT
+			in : SINT;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF SINT;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_SINT_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_SINT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given number in given array and return its index.
+	// If number is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_USINT_IN_ARRAY : DINT
+		VAR_INPUT
+			in : USINT;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF USINT;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_USINT_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_USINT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	
+	// Search for first appearance of given string in given array and return its index.
+	// If string is not present in array, the lowest index minus 1 is returned.
+	// ATTENTION: due to limitations of ST only arrays of STRING with default length (80) can be used.
+	FUNCTION GET_FIRST_INDEX_OF_STRING_IN_ARRAY : DINT
+		VAR_INPUT
+			in : STRING;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF STRING;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_STRING_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_STRING_IN_ARRAY := i_start -1;
 	END_FUNCTION
 END_IMPLEMENTATION
