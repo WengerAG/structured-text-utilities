@@ -4,7 +4,7 @@ UNIT UTILITIES_MATH;
 // Please check Git repository for updates from time to time.
 
 INTERFACE
-	USES UTILITIES_ARRAY;
+	USES UTILITIES_ARRAY, UTILITIES_STRING;
 	
 	FUNCTION CALCULATE_STATISTICS_OF_LREAL_ARRAY;
 	FUNCTION CALCULATE_STATISTICS_OF_REAL_ARRAY;
@@ -478,12 +478,26 @@ IMPLEMENTATION
 		
 		VAR_TEMP
 			str : STRING;
+			i_exp_delimiter : INT;
+			i_exp_value : INT;
 			i_decimal_point : INT;
 			i_digit_to_round : INT;
 			out : LREAL;
 		END_VAR
 		
 		str := LREAL_TO_STRING(in);
+		
+		i_exp_delimiter := FIND(str, 'e');
+		IF i_exp_delimiter > 0 THEN
+			i_exp_value := STRING_TO_INT(MID(str, LEN(str) - i_exp_delimiter, i_exp_delimiter + 1));
+		END_IF;
+		IF i_exp_value < 0 THEN
+			str := CONCAT3(
+				PAD_STRING_RIGHT('0.', INT_TO_USINT(i_exp_value * -1 + 1), '0'),
+				LEFT(str, 1),
+				MID(str, i_exp_delimiter - 3, 3)
+			);
+		END_IF;
 		
 		i_decimal_point := FIND(str, '.');
 		out := STRING_TO_LREAL(LEFT(str, i_decimal_point + precision));
@@ -493,7 +507,7 @@ IMPLEMENTATION
 			out := out + EXPD(-precision);
 		END_IF;
 		
-		ROUND_LREAL:= out;
+		ROUND_LREAL := out;
 	END_FUNCTION
 	
 	// Returns a rounded REAL value with given precision.
@@ -506,12 +520,26 @@ IMPLEMENTATION
 		
 		VAR_TEMP
 			str : STRING;
+			i_exp_delimiter : INT;
+			i_exp_value : INT;
 			i_decimal_point : INT;
 			i_digit_to_round : INT;
 			out : REAL;
 		END_VAR
 		
 		str := REAL_TO_STRING(in);
+		
+		i_exp_delimiter := FIND(str, 'e');
+		IF i_exp_delimiter > 0 THEN
+			i_exp_value := STRING_TO_INT(MID(str, LEN(str) - i_exp_delimiter, i_exp_delimiter + 1));
+		END_IF;
+		IF i_exp_value < 0 THEN
+			str := CONCAT3(
+				PAD_STRING_RIGHT('0.', INT_TO_USINT(i_exp_value * -1 + 1), '0'),
+				LEFT(str, 1),
+				MID(str, i_exp_delimiter - 3, 3)
+			);
+		END_IF;
 		
 		i_decimal_point := FIND(str, '.');
 		out := STRING_TO_REAL(LEFT(str, i_decimal_point + precision));
@@ -521,6 +549,6 @@ IMPLEMENTATION
 			out := out + EXPD(-precision);
 		END_IF;
 		
-		ROUND_REAL:= out;
+		ROUND_REAL := out;
 	END_FUNCTION
 END_IMPLEMENTATION
