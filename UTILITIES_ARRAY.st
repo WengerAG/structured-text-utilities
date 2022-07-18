@@ -28,6 +28,10 @@ INTERFACE
 	FUNCTION REVERSE_SINT_ARRAY;
 	FUNCTION REVERSE_USINT_ARRAY;
 	
+	FUNCTION REVERSE_BYTE_ARRAY;
+	FUNCTION REVERSE_WORD_ARRAY;
+	FUNCTION REVERSE_DWORD_ARRAY;
+	
 	FUNCTION REVERSE_STRING_ARRAY;
 	
 	FUNCTION GET_FIRST_INDEX_OF_LREAL_IN_ARRAY;
@@ -39,6 +43,10 @@ INTERFACE
 	FUNCTION GET_FIRST_INDEX_OF_UINT_IN_ARRAY;
 	FUNCTION GET_FIRST_INDEX_OF_SINT_IN_ARRAY;
 	FUNCTION GET_FIRST_INDEX_OF_USINT_IN_ARRAY;
+	
+	FUNCTION GET_FIRST_INDEX_OF_BYTE_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_WORD_IN_ARRAY;
+	FUNCTION GET_FIRST_INDEX_OF_DWORD_IN_ARRAY;
 	
 	FUNCTION GET_FIRST_INDEX_OF_STRING_IN_ARRAY;
 END_INTERFACE
@@ -484,6 +492,82 @@ IMPLEMENTATION
 	END_FUNCTION
 	
 	
+	FUNCTION REVERSE_BYTE_ARRAY : VOID
+		VAR_IN_OUT
+			data : ARRAY[..] OF BYTE;
+		END_VAR
+		
+		VAR_TEMP
+			i, j : DINT;
+			i_start : DINT;
+			i_end : DINT;
+			i_center : DINT;
+			temp : BYTE;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		i_center := i_start + (i_end - i_start) / 2;
+		
+		FOR i := i_start TO i_center DO
+			j := i_end - (i - i_start);
+			temp := data[i];
+			data[i] := data[j];
+			data[j] := temp;
+		END_FOR;
+	END_FUNCTION
+	
+	FUNCTION REVERSE_WORD_ARRAY : VOID
+		VAR_IN_OUT
+			data : ARRAY[..] OF WORD;
+		END_VAR
+			
+		VAR_TEMP
+			i, j : DINT;
+			i_start : DINT;
+			i_end : DINT;
+			i_center : DINT;
+			temp : WORD;
+		END_VAR
+			
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		i_center := i_start + (i_end - i_start) / 2;
+			
+		FOR i := i_start TO i_center DO
+			j := i_end - (i - i_start);
+			temp := data[i];
+			data[i] := data[j];
+			data[j] := temp;
+		END_FOR;
+	END_FUNCTION
+	
+	FUNCTION REVERSE_DWORD_ARRAY : VOID
+		VAR_IN_OUT
+			data : ARRAY[..] OF DWORD;
+		END_VAR
+			
+		VAR_TEMP
+			i, j : DINT;
+			i_start : DINT;
+			i_end : DINT;
+			i_center : DINT;
+			temp : DWORD;
+		END_VAR
+			
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		i_center := i_start + (i_end - i_start) / 2;
+			
+		FOR i := i_start TO i_center DO
+			j := i_end - (i - i_start);
+			temp := data[i];
+			data[i] := data[j];
+			data[j] := temp;
+		END_FOR;
+	END_FUNCTION
+	
+	
 	FUNCTION REVERSE_STRING_ARRAY : VOID
 		VAR_IN_OUT
 			data : ARRAY[..] OF STRING;
@@ -751,6 +835,97 @@ IMPLEMENTATION
 		END_FOR;
 		
 		GET_FIRST_INDEX_OF_USINT_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	
+	// Search for first appearance of given value in given array and return its index.
+	// If value is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_BYTE_IN_ARRAY : DINT
+		VAR_INPUT
+			in : BYTE;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF BYTE;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_BYTE_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_BYTE_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given value in given array and return its index.
+	// If value is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_WORD_IN_ARRAY : DINT
+		VAR_INPUT
+			in : WORD;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF WORD;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_WORD_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_WORD_IN_ARRAY := i_start -1;
+	END_FUNCTION
+	
+	// Search for first appearance of given value in given array and return its index.
+	// If value is not present in array, the lowest index minus 1 is returned.
+	FUNCTION GET_FIRST_INDEX_OF_DWORD_IN_ARRAY : DINT
+		VAR_INPUT
+			in : DWORD;
+		END_VAR
+		
+		VAR_IN_OUT
+			data : ARRAY[..] OF DWORD;
+		END_VAR
+		
+		VAR_TEMP
+			i : DINT;
+			i_start : DINT;
+			i_end : DINT;
+		END_VAR
+		
+		i_start := _firstIndexOf(data);
+		i_end := _lastIndexOf(data);
+		
+		FOR i := i_start TO i_end DO
+			IF data[i] = in THEN
+				GET_FIRST_INDEX_OF_DWORD_IN_ARRAY := i;
+				RETURN;
+			END_IF;
+		END_FOR;
+		
+		GET_FIRST_INDEX_OF_DWORD_IN_ARRAY := i_start -1;
 	END_FUNCTION
 	
 	
