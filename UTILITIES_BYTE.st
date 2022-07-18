@@ -21,11 +21,11 @@ INTERFACE
 	VAR_GLOBAL CONSTANT
 		// This ARRAY is a lookup table that translates 6-bit positive integer index values into their "Base64 Alphabet" equivalents AS specified in "Table 1: The Base64 Alphabet" OF RFC 2045 (AND RFC 4648).
 		toBase64 : ARRAY[0..63] OF BYTE := [
-			 65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77, //	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+			 65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77, // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
 			 78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90, // 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 			 97,  98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, // 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
 			110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, // 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-			 48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  43,  47		 // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+			 48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  43,  47       // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
 		];
 		// This ARRAY is a lookup table for "URL and Filename safe Base64" as specified in Table 2 OF the RFC 4648, WITH the '+' AND '/' changed TO '-' AND '_'. This table is used when BASE64_URL is specified.
 		toBase64URL : ARRAY[0..63] OF BYTE := [
@@ -204,20 +204,25 @@ IMPLEMENTATION
 			IF (i_out + 0) <= out_end THEN
 				out[i_out + 0] := out_byte1;
 			ELSE
-				EXIT;
+				RETURN;
 			END_IF;
 			IF (i_out + 1) <= out_end THEN
 				out[i_out + 1] := out_byte2;
 			ELSE
-				EXIT;
+				RETURN;
 			END_IF;
 			IF (i_out + 2) <= out_end THEN
 				out[i_out + 2] := out_byte3;
 			ELSE
-				EXIT;
+				RETURN;
 			END_IF;
 			
 			i_out := i_out + 3;
+		END_FOR;
+		
+		// set remaining positions to NULL (0)
+		FOR i_out := i_out TO out_end DO
+			out[i_out] := 0;
 		END_FOR;
 	END_FUNCTION
 END_IMPLEMENTATION
