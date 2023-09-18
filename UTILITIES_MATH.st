@@ -504,7 +504,11 @@ IMPLEMENTATION
 		
 		i_digit_to_round := i_decimal_point + precision + 1;
 		IF i_digit_to_round <= LEN(str) AND str[i_digit_to_round] >= 53 THEN
-			out := out + EXPD(-precision);
+			IF in >= 0 THEN
+				out := out + EXPD(-precision);
+			ELSE
+				out := out - EXPD(-precision);
+			END_IF;
 		END_IF;
 		
 		ROUND_LREAL := out;
@@ -546,7 +550,11 @@ IMPLEMENTATION
 		
 		i_digit_to_round := i_decimal_point + precision + 1;
 		IF i_digit_to_round <= LEN(str) AND str[i_digit_to_round] >= 53 THEN
-			out := out + EXPD(-precision);
+			IF in >= 0 THEN
+				out := out + EXPD(-precision);
+			ELSE
+				out := out - EXPD(-precision);
+			END_IF;
 		END_IF;
 		
 		ROUND_REAL := out;
